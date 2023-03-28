@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\DonorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\Admin;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/', fn (): string => 'hello world');
+
+
+Route::prefix("admin")->group(function () {
+
+    Route::post("/login", [AuthController::class, "login"]);
+
+    Route::middleware('auth:sanctum')->post("/logout", [AuthController::class, "logout"]);
+
+    Route::middleware('auth:sanctum')->get("/donors", [DonorController::class, "index"]);
+});

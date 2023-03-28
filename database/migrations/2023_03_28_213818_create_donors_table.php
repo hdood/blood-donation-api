@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('admins', function (Blueprint $table) {
+        Schema::create('donors', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string("name");
             $table->string("email")->unique();
             $table->string("password");
             $table->enum("gender", ['male', 'female']);
+            $table->enum('bloodType', ['a', 'b', 'ab', 'o']);
+            $table->boolean("rhFactor");
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->string("address");
@@ -30,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('admins');
+        Schema::dropIfExists('donors');
     }
 };
