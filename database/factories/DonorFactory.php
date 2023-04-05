@@ -22,7 +22,7 @@ class DonorFactory extends Factory
             "gender" => fake()->randomElement(['male', "female"]),
             "email" => fake()->email(),
             "password" => Hash::make("password"),
-            "phone" => "06" . fake()->randomNumber(8),
+            "phone" => fake()->randomElement(['06', '05', '07']) . fake()->randomNumber(8),
             "address" => fake()->address(),
             "bloodType" => fake()->randomElement(["a", "b", "ab", "o"]),
             "rhFactor" => fake()->boolean()

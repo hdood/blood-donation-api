@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Donor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DonorController extends Controller
 {
@@ -12,7 +13,7 @@ class DonorController extends Controller
      */
     public function index()
     {
-        return Donor::all(['name', 'address', 'email', 'phone', 'gender', "rhFactor", "bloodType"]);
+        return DB::table("donors")->select(['id', 'name', 'address', 'email', 'phone', 'gender', "rhFactor", "bloodType"])->paginate(10);
     }
 
     /**
@@ -20,7 +21,22 @@ class DonorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $data = $request->validate([
+            "email" => ["required", "email"],
+            "password" => ["required", "min:8"],
+            "name" => ["required"],
+            "bloodType" => ["required", "in:a,ab,b,o"],
+            "phone" => ['required'],
+            "address" => ['required'],
+            "rhFactor" => ['required'],
+            "gender" => ['required']
+        ]);
+        $data['rhFactor'] = (int) $data['rhFactor'];
+
+        Donor::create($data);
+
+        return response()->json(["error" => false]);
     }
 
     /**
@@ -34,16 +50,37 @@ class DonorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Donor $donor)
     {
-        //
+        $request->validate([
+            "email" => ["required", "email"],
+            // "password" => ["required", "min:8"]
+            "name" => ["required"],
+            "bloodType" => ["required", "in:a,ab,b,o"],
+            "phone" => ['required'],
+            "address" => ['required']
+        ]);
+
+
+        $donor->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            "bloodType" => $request->bloodType,
+            "address" => $request->address,
+            "phone" => $request->phone
+        ]);
+
+
+        return response()->json(["error" => false]);
     }
 
-    /**
+    /** 
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Donor $donor)
     {
-        //
+        $donor->delete();
+
+        return response()->json(['error' => false]);
     }
 }

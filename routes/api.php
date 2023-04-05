@@ -20,8 +20,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/', fn (): string => 'hello world');
-
 
 Route::prefix("admin")->group(function () {
 
@@ -29,5 +27,11 @@ Route::prefix("admin")->group(function () {
 
     Route::middleware('auth:sanctum')->post("/logout", [AuthController::class, "logout"]);
 
-    Route::middleware('auth:sanctum')->get("/donors", [DonorController::class, "index"]);
+
+    Route::prefix("donors")->group(function () {
+        Route::get("/", [DonorController::class, "index"]);
+        Route::post("/{donor}", [DonorController::class, "update"]);
+        Route::post("/", [DonorController::class, "store"]);
+        Route::delete("/{donor}",  [DonorController::class, "destroy"]);
+    })->middleware("auth:sanctum");
 });

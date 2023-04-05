@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('donors', function (Blueprint $table) {
-            $table->id();
+            $table->uuid("id");
             $table->timestamps();
             $table->string("name");
             $table->string("email")->unique();
             $table->string("password");
-            $table->enum("gender", ['male', 'female']);
+            $table->enum("gender", ['male', 'female'])->default("male");
             $table->enum('bloodType', ['a', 'b', 'ab', 'o']);
-            $table->boolean("rhFactor");
+            $table->boolean("rhFactor")->default(true);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->string("address");
