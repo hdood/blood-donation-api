@@ -10,11 +10,11 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Donor extends Authenticatable
+class Patient extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasUuids;
 
-    /** 
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -23,13 +23,8 @@ class Donor extends Authenticatable
         'name',
         'email',
         'password',
-        'rhFactor',
-        'bloodType',
         'address',
         'phone',
-        'gender',
-        'dob',
-        'weight'
     ];
 
     /**
@@ -50,9 +45,4 @@ class Donor extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    function donations(): HasMany
-    {
-        return $this->hasMany(Donation::class);
-    }
 }

@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Admin>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Patient>
  */
-class AdminFactory extends Factory
+class PatientFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,11 +19,12 @@ class AdminFactory extends Factory
     {
         return [
             "name" => fake()->name(),
+            "gender" => fake()->randomElement(['male', "female"]),
             "email" => fake()->email(),
             "password" => Hash::make("password"),
-            "phone" => "06" . fake()->randomNumber(8),
+            "phone" => fake()->randomElement(['06', '05', '07']) . fake()->randomNumber(8),
             "address" => fake()->address(),
-            "dob" => fake()->date()
+            "dob" => fake()->dateTimeBetween("-30years", "-18years"),
         ];
     }
 }

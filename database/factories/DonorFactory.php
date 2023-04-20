@@ -25,7 +25,8 @@ class DonorFactory extends Factory
             "phone" => fake()->randomElement(['06', '05', '07']) . fake()->randomNumber(8),
             "address" => fake()->address(),
             "bloodType" => fake()->randomElement(["a", "b", "ab", "o"]),
-            "rhFactor" => fake()->boolean()
+            "rhFactor" => fake()->boolean(),
+            "dob" => fake()->dateTimeBetween("-30years", "-18years"),
         ];
     }
 }

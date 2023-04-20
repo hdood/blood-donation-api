@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string("name");
             $table->string("email")->unique();
             $table->string("password");
+            $table->date("dob");
             $table->enum("gender", ['male', 'female'])->default("male");
             $table->enum('bloodType', ['a', 'b', 'ab', 'o']);
             $table->boolean("rhFactor")->default(true);
