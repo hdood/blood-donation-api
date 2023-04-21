@@ -25,6 +25,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->string("address");
             $table->string("phone");
+            $table->boolean("eligible")->default(false);
         });
     }
 

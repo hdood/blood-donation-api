@@ -18,7 +18,7 @@ class AuthenticateAdmin
     {
 
         if (!Auth::guard("admin")->check()) {
-            return response()->json(["error" => "Unauthorized", "request_user" => $request->user(), "auth_user" => Auth::guard("admin")->user()], 401);
+            return response()->json(["error" => "Unauthorized"], 401);
         }
 
 
