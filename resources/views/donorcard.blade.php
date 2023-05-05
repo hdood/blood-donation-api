@@ -48,12 +48,12 @@
     <div class="wrapper">
         <div class="infos">
             <span class="name">{{ $name }}</span>
-            <span> {{ $bloodType }}</span>
+            <span> {{ $bloodGroup }}</span>
             <span>date of birth : 04 / 03 / 2002</span>
             <span>made in : {{ Carbon\Carbon::now(); }}</span>
-      </div>
+        </div>
 
-      <span>hello world this is working</span> 
+        <span>hello world this is working</span>
         <div class="image-wrapper   ">
             <img src="" alt="">
         </div>

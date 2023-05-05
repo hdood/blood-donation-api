@@ -25,6 +25,9 @@ class Patient extends Authenticatable
         'password',
         'address',
         'phone',
+        'gender',
+        'dob',
+        'active'
     ];
 
     /**

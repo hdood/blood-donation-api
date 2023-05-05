@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Donor;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,9 +15,16 @@ class DonorController extends Controller
     public function index(Request $request)
     {
         if (request("query")) {
-            return Donor::where("name", "like", request("query") . "%")->orderBy("created_at", "desc")->paginate(10);
+            return Donor::where(["active" => 1])->where("name", "like", request("query") . "%")->with('donations')->orderBy("created_at", "desc")->paginate(25);
         }
-        return Donor::with("donations")->orderBy("created_at", "desc")->paginate(10);
+        return Donor::where(["active" => 1])->with('donations')->orderBy("created_at", "desc")->paginate(25);
+    }
+    public function getInactiveDonors(Request $request)
+    {
+        if (request("query")) {
+            return Donor::where(["active" => 0])->where("name", "like", request("query") . "%")->orderBy("created_at", "desc")->paginate(25);
+        }
+        return Donor::where(["active" => 0])->orderBy("created_at", "desc")->paginate(25);
     }
 
     /** 
@@ -31,54 +37,45 @@ class DonorController extends Controller
             "email" => ["required", "email"],
             "password" => ["required", "min:8"],
             "name" => ["required"],
-            "bloodType" => ["required", "in:a,ab,b,o"],
             "phone" => ['required'],
             "address" => ['required'],
-            "rhFactor" => ['required'],
             "gender" => ['required'],
-            "dob" => ['required', 'date']
+            "dob" => ['required', 'date'],
+            "rhFactor" => ["required", 'in:positive,negative'],
+            "bloodGroup" => ["required", "in:a,ab,b,o"]
         ]);
-        $data['rhFactor'] = (int) $data['rhFactor'];
         $data['password'] = Hash::make($data['password']);
 
-        Donor::create($data);
-
-        return response()->json(["error" => false]);
+        $user = Donor::create($data);
+        return response()->json(["user" => $user, "error" => false]);
     }
-
-    /** 
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Donor $donor)
     {
-        $request->validate([
-            "email" => ["required", "email"],
-            // "password" => ["required", "min:8"]
+
+        $data = $request->validate([
             "name" => ["required"],
-            "bloodType" => ["required", "in:a,ab,b,o"],
+            "bloodGroup" => ["required", "in:a,ab,b,o"],
             "phone" => ['required'],
-            "address" => ['required']
+            "address" => ['required'],
+            "gender" => ['required'],
+            "rhFactor" => ["required", 'in:positive,negative'],
+            "dob" => ['required', 'date'],
         ]);
 
+        if ($donor->update([
+            'name' => $data['name'],
+            "bloodGroup" => $data['bloodGroup'],
+            "address" => $data['address'],
+            "phone" => $data['phone'],
+            "gender" => $data['gender'],
+            "dob" => $data['dob'],
+            "rhFactor" => $data['rhFactor']
+        ])) return response()->json(["error" => false, "donor" => $donor]);
 
-        $donor->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            "bloodType" => $request->bloodType,
-            "address" => $request->address,
-            "phone" => $request->phone
-        ]);
-
-
-        return response()->json(["error" => false]);
+        return response()->json(["error" => "something went wrong"], 500);
     }
 
     /** 
@@ -91,21 +88,27 @@ class DonorController extends Controller
         return response()->json(['error' => false]);
     }
 
-    public function renderCard(Donor $donor)
-    {
-        $rhFactor = boolval($donor->rhFactor) ? ' positive' : ' negative';
-        $bloodType = strtoupper(($donor->bloodType . $rhFactor));
-
-        $pdf = Pdf::loadView('donorcard', ['name' => $donor->name, "bloodType" => $bloodType]);
-
-        return $pdf->download(str_replace(" ", "_", $donor->name) . "_card" . '.pdf');
-    }
-
     public function getDonations()
     {
 
         $donor = Auth::guard('donor')->user();
 
         return response()->json($donor->donations);
+    }
+
+    public function toggleActiveState(Donor $donor)
+    {
+        $donor->active = !$donor->active;
+        if ($donor->save()) {
+            return response()->json(['error' => false, 'active' => $donor->active]);
+        }
+        return response()->json(["error" => "something went wrong"], 500);
+    }
+
+    public function getNotifications()
+    {
+        $donor = Auth::guard('donor')->user();
+
+        return $donor->notifications;
     }
 }

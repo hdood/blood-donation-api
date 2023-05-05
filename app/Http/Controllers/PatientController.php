@@ -10,9 +10,9 @@ class PatientController extends Controller
     public function index()
     {
         if (request("query")) {
-            return Patient::where("name", "like", request("query") . "%")->orderBy("created_at", "desc")->paginate(10);
+            return Patient::where("name", "like", request("query") . "%")->orderBy("created_at", "desc")->paginate(25);
         }
-        return Patient::orderBy("created_at", "desc")->paginate(10);
+        return Patient::orderBy("created_at", "desc")->paginate(25);
     }
 
     /** 
@@ -27,7 +27,8 @@ class PatientController extends Controller
             "name" => ["required"],
             "phone" => ['required'],
             "address" => ['required'],
-            "gender" => ['required']
+            "gender" => ['required'],
+            "dob" => ['required']
         ]);
 
         Patient::create($data);
@@ -46,27 +47,28 @@ class PatientController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Patient $Patient)
+    public function update(Request $request, Patient $patient)
     {
-        $request->validate([
-            "email" => ["required", "email"],
-            "password" => ["required", "min:8"],
-            "name" => ["required"],
-            "phone" => ['required'],
-            "address" => ['required']
-        ]);
+        $request->validate(
+            [
+                "name" => ["required"],
+                "phone" => ['required'],
+                "address" => ['required'],
+                "gender" => ['required'],
+                "dob" => ['required']
+            ]
+        );
 
 
-        $Patient->update([
+        if ($patient->update([
             'name' => $request->name,
-            'email' => $request->email,
-            "bloodType" => $request->bloodType,
             "address" => $request->address,
-            "phone" => $request->phone
-        ]);
+            "phone" => $request->phone,
+            "gender" => $request->gender,
+            "dob" => $request->dob,
+        ])) return response()->json(["error" => false, "patient" => $patient]);
 
-
-        return response()->json(["error" => false]);
+        return response()->json(["error" => "something went wrong"], 500);
     }
 
     /** 
@@ -74,8 +76,18 @@ class PatientController extends Controller
      */
     public function destroy(Patient $patient)
     {
+
         $patient->delete();
 
         return response()->json(['error' => false]);
+    }
+
+    public function toggleActiveState(Patient $patient)
+    {
+        $patient->active = !$patient->active;
+        if ($patient->save()) {
+            return response()->json(['error' => false, 'active' => $patient->active]);
+        }
+        return response()->json(["error" => "something went wrong"], 500);
     }
 }

@@ -19,6 +19,7 @@ class DonationFactory extends Factory
     {
         return [
             "amount" => fake()->numberBetween(200, 450),
+            "type" => fake()->randomElement([1, 2, 3, 4]),
             "location" => "Setif",
             "date" => Carbon::now()
         ];

@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('donations', function (Blueprint $table) {
+        Schema::create('appointments', function (Blueprint $table) {
             $table->id();
-            $table->integer("amount");
-            $table->string("location");
-            $table->enum("type", [1, 2, 3, 4]);
-            $table->dateTime("date");
-            $table->timestamps();
+            $table->boolean("confirmed")->default(false);
             $table->foreignUuid("donor_id");
+            $table->date("date")->nullable();
+            $table->time("time")->nullable();
+            $table->timestamps();
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('donations');
+        Schema::dropIfExists('appointments');
     }
 };

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -24,12 +23,13 @@ class Donor extends Authenticatable
         'email',
         'password',
         'rhFactor',
-        'bloodType',
+        'bloodGroup',
         'address',
         'phone',
         'gender',
         'dob',
-        'weight'
+        'weight',
+        "active"
     ];
 
     /**
@@ -54,5 +54,9 @@ class Donor extends Authenticatable
     function donations(): HasMany
     {
         return $this->hasMany(Donation::class);
+    }
+    function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class);
     }
 }

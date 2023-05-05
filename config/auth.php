@@ -48,6 +48,10 @@ return [
             'driver' => 'session',
             'provider' => 'donors',
         ],
+        'patient' => [
+            'driver' => 'session',
+            'provider' => 'patients',
+        ],
     ],
 
     /*
@@ -80,7 +84,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Donor::class,
         ],
-
+        'patients' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Patient::class,
+        ],
 
         // 'users' => [
         //     'driver' => 'database',
@@ -121,6 +128,12 @@ return [
             'throttle' => 60,
         ],
         'donors' => [
+            'provider' => 'users',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'patients' => [
             'provider' => 'users',
             'table' => 'password_reset_tokens',
             'expire' => 60,

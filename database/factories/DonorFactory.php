@@ -24,8 +24,8 @@ class DonorFactory extends Factory
             "password" => Hash::make("password"),
             "phone" => fake()->randomElement(['06', '05', '07']) . fake()->randomNumber(8),
             "address" => fake()->address(),
-            "bloodType" => fake()->randomElement(["a", "b", "ab", "o"]),
-            "rhFactor" => fake()->boolean(),
+            "bloodGroup" => fake()->randomElement(["a", "b", "ab", "o"]),
+            "rhFactor" => fake()->randomElement(["positive", "negative"]),
             "dob" => fake()->dateTimeBetween("-30years", "-18years"),
         ];
     }
