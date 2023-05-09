@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Patient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PatientController extends Controller
 {
@@ -30,9 +31,7 @@ class PatientController extends Controller
             "gender" => ['required'],
             "dob" => ['required']
         ]);
-
         Patient::create($data);
-
         return response()->json(["error" => false]);
     }
 
@@ -58,8 +57,6 @@ class PatientController extends Controller
                 "dob" => ['required']
             ]
         );
-
-
         if ($patient->update([
             'name' => $request->name,
             "address" => $request->address,
@@ -67,7 +64,6 @@ class PatientController extends Controller
             "gender" => $request->gender,
             "dob" => $request->dob,
         ])) return response()->json(["error" => false, "patient" => $patient]);
-
         return response()->json(["error" => "something went wrong"], 500);
     }
 
@@ -76,9 +72,7 @@ class PatientController extends Controller
      */
     public function destroy(Patient $patient)
     {
-
         $patient->delete();
-
         return response()->json(['error' => false]);
     }
 
@@ -89,5 +83,20 @@ class PatientController extends Controller
             return response()->json(['error' => false, 'active' => $patient->active]);
         }
         return response()->json(["error" => "something went wrong"], 500);
+    }
+
+    public function getLastRequestState()
+    {
+
+        $patient = Auth::guard("patient")->user();
+        $lastRequest =  $patient->bloodRequests()->where(['accepted' => 0])->first();
+        $state = $lastRequest ? 'pending' : '';
+        return response()->json(["request" => $lastRequest, "state" => $state]);
+    }
+
+    public function getRequests()
+    {
+        $patient = Auth::guard("patient")->user();
+        return $patient->bloodRequests;
     }
 }

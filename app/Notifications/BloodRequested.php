@@ -2,21 +2,22 @@
 
 namespace App\Notifications;
 
-use App\Models\Appointment;
+use App\Models\BloodRequest;
+use App\Models\Patient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
-class AppointmentAccepted extends Notification
+class BloodRequested extends Notification
 {
     use Queueable;
-    private Appointment $appointment;
+
+
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(Appointment $appointment)
+    public function __construct(private Patient $patient, private BloodRequest $request)
     {
-        $this->appointment = $appointment;
     }
 
     /**
@@ -29,11 +30,17 @@ class AppointmentAccepted extends Notification
         return ['database'];
     }
 
-    public function toDatabase(object $notifiable): array
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(object $notifiable): array
     {
         return [
-            "date" => $this->appointment->date,
-            "time" => $this->appointment->time
+            'patient' => $this->patient,
+            'request' => $this->request
         ];
     }
 }

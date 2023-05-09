@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('appointments', function (Blueprint $table) {
+        Schema::create('blood_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid("donor_id");
-            $table->string('state');
-            $table->date("date")->nullable();
-            $table->time("time")->nullable();
+            $table->string('bloodGroup');
+            $table->string('rhFactor');
+            $table->boolean('accepted')->default(0);
+            $table->foreignUuid('patient_id');
+            $table->string("description");
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('appointments');
+        Schema::dropIfExists('blood_requests');
     }
 };

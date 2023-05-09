@@ -6,9 +6,11 @@ use App\Models\Appointment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
-class AppointmentAccepted extends Notification
+class AppointmentCancelled extends Notification
 {
     use Queueable;
+
+
     private Appointment $appointment;
 
     /**
@@ -29,11 +31,16 @@ class AppointmentAccepted extends Notification
         return ['database'];
     }
 
-    public function toDatabase(object $notifiable): array
+    /**
+     * Get the array representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(object $notifiable): array
     {
         return [
-            "date" => $this->appointment->date,
-            "time" => $this->appointment->time
+            "appointment" => $this->appointment,
+            "user" => $this->appointment->donor
         ];
     }
 }

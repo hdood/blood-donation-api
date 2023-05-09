@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Google_Client;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
@@ -39,7 +40,7 @@ class AuthController extends Controller
 
         $request->session()->invalidate();
 
-        $request->session()->regenerateToken();
+        Session::migrate(true);
 
         return true;
     }
@@ -61,7 +62,7 @@ class AuthController extends Controller
         $data['password'] = Hash::make($data['password']);
         $donor = Donor::create($data);
 
-        return $this->authenticateDonorInstance($donor);
+        return response()->json(["error" => false]);
     }
     public function googleRegister(Request $request)
     {
@@ -90,7 +91,7 @@ class AuthController extends Controller
         $data['name'] = $payload['name'];
         $donor = Donor::create($data);
 
-        return $this->authenticateDonorInstance($donor);
+        return response()->json(["error" => false]);
     }
 
     function googleLogin(Request $request)

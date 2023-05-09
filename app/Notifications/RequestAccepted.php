@@ -2,21 +2,21 @@
 
 namespace App\Notifications;
 
-use App\Models\Appointment;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class AppointmentAccepted extends Notification
+class RequestAccepted extends Notification
 {
     use Queueable;
-    private Appointment $appointment;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(Appointment $appointment)
+    public function __construct()
     {
-        $this->appointment = $appointment;
+        //
     }
 
     /**
@@ -29,11 +29,16 @@ class AppointmentAccepted extends Notification
         return ['database'];
     }
 
-    public function toDatabase(object $notifiable): array
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(object $notifiable): array
     {
         return [
-            "date" => $this->appointment->date,
-            "time" => $this->appointment->time
+            //
         ];
     }
 }

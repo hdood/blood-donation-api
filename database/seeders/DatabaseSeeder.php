@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             "address" => fake()->address()
         ]);
 
-        Donor::factory(['active' => 1])->count(10)->has(Donation::factory()->count(fake()->numberBetween(0, 1)))->create();
+        Donor::factory(['active' => 1])->count(10)->create();
 
         Donor::factory(10)->create();
 

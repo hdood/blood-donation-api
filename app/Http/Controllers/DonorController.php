@@ -83,6 +83,8 @@ class DonorController extends Controller
      */
     public function destroy(Donor $donor)
     {
+
+        $donor->appointments()->delete();
         $donor->delete();
 
         return response()->json(['error' => false]);
@@ -103,12 +105,5 @@ class DonorController extends Controller
             return response()->json(['error' => false, 'active' => $donor->active]);
         }
         return response()->json(["error" => "something went wrong"], 500);
-    }
-
-    public function getNotifications()
-    {
-        $donor = Auth::guard('donor')->user();
-
-        return $donor->notifications;
     }
 }

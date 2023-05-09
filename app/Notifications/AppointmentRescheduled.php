@@ -2,11 +2,12 @@
 
 namespace App\Notifications;
 
-use App\Models\Appointment;
 use Illuminate\Bus\Queueable;
+use App\Models\Appointment;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class AppointmentAccepted extends Notification
+class AppointmentRescheduled extends Notification
 {
     use Queueable;
     private Appointment $appointment;
@@ -14,10 +15,12 @@ class AppointmentAccepted extends Notification
     /**
      * Create a new notification instance.
      */
+
     public function __construct(Appointment $appointment)
     {
         $this->appointment = $appointment;
     }
+
 
     /**
      * Get the notification's delivery channels.
@@ -29,6 +32,12 @@ class AppointmentAccepted extends Notification
         return ['database'];
     }
 
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
     public function toDatabase(object $notifiable): array
     {
         return [
